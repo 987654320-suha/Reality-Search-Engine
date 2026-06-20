@@ -1,10 +1,24 @@
 import easyocr
+import cv2
 
 reader = easyocr.Reader(['en'])
 
 def extract_text(image_path):
-    results = reader.readtext(image_path)
 
-    text = " ".join([item[1] for item in results])
+    image = cv2.imread(image_path)
 
-    return text
+    if image is None:
+        return ""
+
+    try:
+        results = reader.readtext(image)
+
+        text = " ".join(
+            [item[1] for item in results]
+        )
+
+        return text
+
+    except Exception as e:
+        print("OCR Error:", e)
+        return ""

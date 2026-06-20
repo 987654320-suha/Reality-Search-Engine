@@ -2,6 +2,10 @@ from fastapi import APIRouter, UploadFile, File
 from pathlib import Path
 import shutil
 
+from app.services.memory_service import save_memory
+from vision.ocr import extract_text
+from vision.object_detector import detect_objects
+
 router = APIRouter()
 
 UPLOAD_DIR = Path("uploads")
@@ -15,8 +19,22 @@ async def upload_image(file: UploadFile = File(...)):
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
+    ocr_text = extract_text(str(file_path))
+    objects = detect_objects(str(file_path))
+
+    memory = {
+        "title": f"Image Memory - {file.filename}",
+        "description": ocr_text,
+        "objects": objects,
+        "source": file.filename,
+        "image": f"/uploads/{file.filename}"
+    }
+
+    save_memory(memory)
+
     return {
-        "message": "Image uploaded successfully",
+        "message": "Image uploaded and processed",
         "filename": file.filename,
-        "path": str(file_path)
+        "ocr_text": ocr_text,
+        "objects": objects
     }
