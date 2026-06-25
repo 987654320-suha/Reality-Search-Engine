@@ -1,5 +1,25 @@
-backend/venv/
+# Python
+.venv/
 __pycache__/
+*.pyc
+
+# Database
+memory.db
+
+# Local memories
+data/memories.json
+
+# Uploaded files
+uploads/
+
+# Environment variables
 .env
+
+# Node
 node_modules/
+
+# Next.js
 .next/
+
+# VS Code
+.vscode/

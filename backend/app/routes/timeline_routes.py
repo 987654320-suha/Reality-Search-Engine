@@ -3,6 +3,7 @@ from app.services.memory_service import load_memories
 
 router = APIRouter()
 
+
 @router.get("/timeline")
 def timeline():
 
@@ -11,5 +12,14 @@ def timeline():
     memories.sort(
         key=lambda x: x.get("date", "9999-99-99")
     )
+
+    for memory in memories:
+
+        memory.pop("embedding", None)
+
+        if len(memory.get("description", "")) > 300:
+            memory["description"] = (
+                memory["description"][:300] + "..."
+            )
 
     return memories
